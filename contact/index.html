@@ -11,26 +11,18 @@
   <h1>Contact</h1>
   <p>Get in touch with me.</p>
 
-  <form action="mailto:nashktorab@ucsd.edu"
-        method="POST"
-        enctype="text/plain">
+  <form action="mailto:nashktorab@ucsd.edu" method="GET">
+  <label>
+    Subject:
+    <input type="text" name="subject">
+  </label>
 
-    <label>
-      Your email:
-      <input type="email" name="email">
-    </label>
+  <label>
+    Message:
+    <textarea name="body" rows="5"></textarea>
+  </label>
 
-    <label>
-      Subject:
-      <input type="text" name="subject">
-    </label>
-
-    <label>
-      Message:
-      <textarea name="body" rows="5"></textarea>
-    </label>
-
-    <button type="submit">Send</button>
-  </form>
+  <button type="submit">Send</button>
+</form>
 </body>
 </html>

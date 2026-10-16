@@ -91,3 +91,20 @@ select.addEventListener('input', (event) => {
   setColorScheme(colorScheme);
   localStorage.colorScheme = colorScheme;
 });
+const form = document.querySelector('form[action^="mailto:"]');
+
+form?.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const data = new FormData(form);
+  const parameters = [];
+
+  for (const [name, value] of data) {
+    parameters.push(
+      `${encodeURIComponent(name)}=${encodeURIComponent(value)}`
+    );
+  }
+
+  const url = `${form.action}?${parameters.join('&')}`;
+  location.href = url;
+});
