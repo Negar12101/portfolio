@@ -179,3 +179,17 @@ h6 {
 body {
   padding-top: 3.5rem;
 }
+.color-scheme {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 80%;
+}
+
+.color-scheme select {
+  font: inherit;
+}
+
+body {
+  padding-top: 3.5rem;
+}
