@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Project 2 — Persuasive or Deceptive Visualization</title>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #183341;
+      --muted: #526570;
+      --line: #dce4e8;
+      --warm: #a63e2d;
+      --cool: #176b86;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #ffffff;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.75;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 28px 80px;
+    }
+
+    header {
+      max-width: 850px;
+      margin-bottom: 48px;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 12px 0 20px;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.15;
+      letter-spacing: -0.035em;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 1.7rem;
+      line-height: 1.3;
+    }
+
+    h3 {
+      margin: 30px 0 14px;
+      font-size: 1.2rem;
+    }
+
+    p {
+      margin: 0 0 18px;
+    }
+
+    .intro,
+    figcaption,
+    .scale-note {
+      color: var(--muted);
+    }
+
+    section {
+      margin-top: 48px;
+      padding-top: 36px;
+      border-top: 1px solid var(--line);
+    }
+
+    figure {
+      margin: 24px 0;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    figcaption {
+      max-width: 900px;
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+
+    .decisions {
+      max-width: 900px;
+      padding-left: 24px;
+    }
+
+    .decisions li {
+      margin-bottom: 22px;
+      padding-left: 5px;
+    }
+
+    .decisions strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .support {
+      color: var(--warm);
+    }
+
+    .oppose {
+      color: var(--cool);
+    }
+
+    .reading {
+      max-width: 850px;
+    }
+
+    a {
+      color: var(--cool);
+      text-underline-offset: 3px;
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--cool);
+      outline-offset: 4px;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 32px 18px 48px;
+      }
+
+      section {
+        margin-top: 32px;
+        padding-top: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<main>
+
+  <header>
+    <p class="eyebrow">DSC 209 · Project 2</p>
+
+    <h1>One Dataset, Two Temperature Stories</h1>
+
+    <p class="intro">
+      This report explores how time windows, visual emphasis,
+      and statistical summaries can lead readers toward different
+      interpretations of the same temperature record.
+    </p>
+  </header>
+
+  <section aria-labelledby="proposition">
+    <h2 id="proposition">Proposition</h2>
+
+    <div class="reading">
+      <p>
+        <strong>
+          The World temperature series shows sustained warming
+          rather than a temporary fluctuation.
+        </strong>
+      </p>
+
+      <p>
+        Both visualizations use the World series from the IMF
+        Climate Dashboard’s Annual Surface Temperature Change
+        dataset. The downloaded file contains annual observations
+        from 1961 through 2024. Values are temperature anomalies
+        in degrees Celsius relative to the 1951–1980 baseline,
+        rather than absolute temperatures or changes from the
+        preceding year.
+      </p>
+
+      <p>
+        I selected the existing World row and converted its year
+        columns into a chronological series. All 64 annual values
+        were available, so no missing observations were filled.
+        I did not calculate an unweighted average of countries.
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="visualization-one">
+    <p class="eyebrow support">Visualization 1 · Supporting the proposition</p>
+
+    <h2 id="visualization-one">The Long Record Points Upward</h2>
+
+    <figure>
+      <img
+        src="A1_long_term.png"
+        alt="World temperature anomalies from 1961 to 2024.
+             A gray annual line fluctuates while a red trailing
+             five-year average rises across the record.
+             The 2024 anomaly is approximately plus 2.12 degrees Celsius."
+      >
+
+      <figcaption>
+        The annual observations show substantial variation, but
+        the five-year average makes the persistent rise easier
+        to follow. The full available record provides the context
+        needed to interpret individual cooling years.
+      </figcaption>
+    </figure>
+
+    <h3>Design Decisions and Rationale</h3>
+
+    <p class="scale-note">
+      Scores are my assessments: −2 means fully deceptive,
+      and +2 means fully earnest.
+    </p>
+
+    <ul class="decisions">
+      <li>
+        <strong>Full available time span — Score: +2</strong>
+        I included every year from 1961 through 2024 so that readers
+        could judge the direction across the complete downloaded
+        record. A shorter recent window would have made individual
+        fluctuations more prominent, but I chose the full span
+        because the proposition concerns sustained change.
+      </li>
+
+      <li>
+        <strong>Trailing five-year average — Score: +1.5</strong>
+        I calculated each average from the current year and the
+        preceding four years, so the averaged line begins in 1965.
+        This reduces annual noise and strengthens the long-term
+        message, although it also delays the response to abrupt
+        changes. I kept the annual series visible rather than
+        replacing it with the smoother line.
+      </li>
+
+      <li>
+        <strong>Shared linear axes and baseline reference — Score: +2</strong>
+        Both lines use the same linear temperature scale, and
+        the reference at zero identifies the historical baseline.
+        A tighter vertical range would make changes appear
+        steeper, but I retained a range that includes all annual
+        observations and the baseline.
+      </li>
+
+      <li>
+        <strong>Red emphasis on the average — Score: +1</strong>
+        The thicker red line attracts attention to the persistent
+        pattern, while the thinner gray line preserves the annual
+        detail. This hierarchy is persuasive because readers are
+        likely to follow the average first. I considered giving
+        both lines equal weight, but that made their different
+        roles less clear.
+      </li>
+
+      <li>
+        <strong>Takeaway title and latest-year annotation — Score: +1</strong>
+        The title tells readers what conclusion the chart supports,
+        and the 2024 annotation makes the latest observation easy
+        to locate. Highlighting a high endpoint can increase its
+        rhetorical importance, so I kept the entire series visible
+        and did not treat that single year as sufficient evidence
+        of the long-term pattern.
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="visualization-two">
+    <p class="eyebrow oppose">Visualization 2 · Opposing presentation</p>
+
+    <h2 id="visualization-two">A Closer Window Points Toward Cooling</h2>
+
+    <figure>
+      <img
+        src="B1_selected_interval.png"
+        alt="Selected World temperature anomalies from 2016 to 2022.
+             Annual values fluctuate and a dashed fitted line
+             slopes slightly downward, with a fitted rate of
+             minus 0.138 degrees Celsius per decade."
+      >
+
+      <figcaption>
+        The selected seven observations produce a negative fitted
+        slope. This presentation encourages a cooling interpretation,
+        but its short interval cannot establish the direction
+        of the longer record.
+      </figcaption>
+    </figure>
+
+    <h3>Design Decisions and Rationale</h3>
+
+    <ul class="decisions">
+      <li>
+        <strong>Selection of 2016–2022 — Score: −2</strong>
+        I chose an interval beginning in a relatively warm year
+        and ending before the higher observations in 2023 and
+        2024. The dates are labeled correctly, but selecting this
+        window to argue against sustained warming leaves out
+        context that would substantially change the interpretation.
+        Using the full record would weaken the intended opposing
+        message.
+      </li>
+
+      <li>
+        <strong>Narrow vertical range — Score: −1</strong>
+        The axis runs from approximately 1.15°C to 1.86°C, making
+        differences within the interval more visually prominent.
+        A nonzero axis is not inherently inappropriate for a line
+        chart, but here it contributes to a cooling narrative when
+        combined with the selected dates. Using the same limits
+        as the first chart would make the short-term movements
+        appear smaller.
+      </li>
+
+      <li>
+        <strong>Linear fit expressed per decade — Score: −1</strong>
+        I fitted an ordinary least-squares line to the seven annual
+        observations and multiplied its annual slope by ten,
+        giving approximately −0.138°C per decade. The calculation
+        is accurate, but the per-decade unit can make the result
+        feel more established than this short interval warrants.
+        I identify the fitted dates and do not present the line
+        as a forecast or a statistically demonstrated long-term trend.
+      </li>
+
+      <li>
+        <strong>Cooling-oriented title and blue trend line — Score: −1</strong>
+        The title directs attention toward cooling, and the blue
+        dashed line reinforces that interpretation. I avoided a
+        stronger claim such as “warming has stopped,” because
+        the chart cannot establish that conclusion. Even with
+        restrained wording, the framing can encourage readers
+        to generalize beyond the displayed interval.
+      </li>
+
+      <li>
+        <strong>All annual points within the interval remain visible — Score: +2</strong>
+        I retained all seven observations instead of showing only
+        the first and last values or the fitted line. This lets
+        readers see the intervening rises and falls and recognize
+        that the decline is not uniform. Removing those points
+        would make the opposing argument simpler but less transparent.
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="reflection">
+    <h2 id="reflection">Final Reflection</h2>
+
+    <div class="reading">
+      <p>
+        The main challenge in this project was making two opposing
+        arguments without changing the underlying observations.
+        The full record made the warming pattern straightforward
+        to show, while the opposing view depended on narrowing
+        the time window. Comparing the two designs made it clear
+        that choosing what to include is already an important
+        part of the argument, before colors or annotations are added.
+      </p>
+
+      <p>
+        What stood out to me was that a chart could contain
+        accurate values, readable labels, and a correctly
+        calculated trend while still encouraging a misleading
+        conclusion. The 2016–2022 slope is a valid description of
+        that selected interval, but it does not overturn the
+        longer-term pattern. The first chart also involves
+        judgment: its moving average, red emphasis, and takeaway
+        title guide attention toward persistence rather than
+        variability.
+      </p>
+
+      <p>
+        I now think of ethical visualization as making the scope
+        of the evidence clear enough that readers can assess
+        the conclusion for themselves. Persuasion is reasonable
+        when emphasis remains consistent with the data and
+        important context stays accessible. It becomes misleading
+        when a design encourages a broader claim than the evidence
+        supports, especially by selecting dates or hiding relevant
+        observations. Accurate calculations are necessary, but
+        they are not enough without appropriate context.
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="sources">
+    <h2 id="sources">Data Source</h2>
+
+    <div class="reading">
+      <p>
+        <a href="https://climatedata.imf.org/">
+          IMF Climate Change Indicators Dashboard
+        </a>,
+        Annual Surface Temperature Change, World series.
+        The downloaded file identifies FAOSTAT as its source.
+        Both visualizations use temperature anomalies relative
+        to the 1951–1980 baseline.
+      </p>
+
+      <p>
+        This report compares presentations of the supplied series.
+        It does not estimate the causes of temperature change
+        or establish statistical significance for the selected
+        short-period trend.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    DSC 209 · Project 2 · Persuasive or Deceptive Visualization
+  </footer>
+
+</main>
+</body>
+</html>
