@@ -1,0 +1,74 @@
+[
+  {
+    "title": "Grocery Store Food Processing",
+    "year": 2026,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "An expository visualization using GroceryDB to compare the prevalence of ultra-processed products across grocery stores."
+  },
+  {
+    "title": "Climate Change and Visualization Ethics",
+    "year": 2026,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "A project examining how visualization design choices can support opposing interpretations of temperature-change data."
+  },
+  {
+    "title": "Personal Portfolio Website",
+    "year": 2026,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "A responsive website built with HTML, CSS, and JavaScript, featuring automatic navigation, theme preferences, project cards, and GitHub statistics."
+  },
+  {
+    "title": "San Diego Airbnb Data Exploration",
+    "year": 2025,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "A Python coursework project exploring San Diego Airbnb listings through data analysis and visualizations."
+  },
+  {
+    "title": "Linear Programming Optimization",
+    "year": 2023,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "An optimization project applying linear programming to operational decisions under resource constraints."
+  },
+  {
+    "title": "Demand Forecasting",
+    "year": 2022,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "An analysis of historical demand to support forecasting, supply chain planning, and inventory decisions."
+  },
+  {
+    "title": "Supply Chain Dashboard",
+    "year": 2022,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "A dashboard presenting supply chain performance indicators to support monitoring and business decisions."
+  },
+  {
+    "title": "Schedule Delay Analysis Tool",
+    "year": 2020,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "A project planning tool examining schedule delays and their effects on project completion."
+  },
+  {
+    "title": "Inventory Management System",
+    "year": 2019,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "A project supporting inventory tracking and the organization of inventory information."
+  },
+  {
+    "title": "Inventory Analysis — Sample Project",
+    "year": 2024,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder data for the lab: a sample analysis of stock levels and reorder decisions. The year is illustrative."
+  },
+  {
+    "title": "Renewable Energy Schedule — Sample Project",
+    "year": 2025,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder data for the lab: a fictional renewable energy schedule showing activities, dependencies, and milestones. The year is illustrative."
+  },
+  {
+    "title": "Data Quality Dashboard — Sample Project",
+    "year": 2026,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder data for the lab: a proposed dashboard identifying missing values, duplicate records, and inconsistent formats."
+  }
+]
