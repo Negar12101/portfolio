@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Temperature Data Exploration</title>
+
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+  <style>
+    .chart-heading {
+      margin: 0 0 10px;
+      font-size: 23px;
+      line-height: 1.35;
+    }
+
+    .chart-description,
+    .chart-note {
+      color: #68637c;
+      font-size: 13px;
+    }
+
+    .chart-description {
+      margin: 0 0 20px;
+    }
+
+    .chart-note {
+      margin: 16px 0 0;
+    }
+
+    .exploration-chart svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      font-family: inherit;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .legend-item svg {
+      width: 32px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+
+    a {
+      color: #7952b3;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    section {
+      scroll-margin-top: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .chart-heading {
+        font-size: 19px;
+      }
+
+      .exploration-chart {
+        overflow-x: auto;
+      }
+
+      .exploration-chart > svg {
+        min-width: 640px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header>
+      <p>DSC 209 · Project 3 · Exploration</p>
+      <h1>Exploring Temperature Change</h1>
+
+      <p>
+        Six exploratory views of annual temperature anomalies
+        to inform an interactive comparison of locations and years.
+      </p>
+
+      <a href="./index.html">Open interactive comparison →</a>
+
+      <nav aria-label="Exploratory charts">
+        <a href="#chart1-section">01 World</a>
+        <a href="#chart2-section">02 Comparison</a>
+        <a href="#chart3-section">03 Period averages</a>
+        <a href="#chart4-section">04 Distribution</a>
+        <a href="#chart5-section">05 Heatmap</a>
+        <a href="#chart6-section">06 Missing data</a>
+      </nav>
+    </header>
+
+    <p id="status" role="status">Loading data…</p>
+
+    <section id="chart1-section">
+      <h2 class="chart-heading">
+        01 · How has the World series changed over time?
+      </h2>
+
+      <p class="chart-description">
+        Annual temperature anomalies, 1961–2024, relative to
+        1951–1980. The supplied World aggregate is used directly;
+        no smoothing or averaging across country rows.
+      </p>
+
+      <div id="world-chart" class="exploration-chart"></div>
+      <p id="world-note" class="chart-note"></p>
+    </section>
+
+    <section id="chart2-section">
+      <h2 class="chart-heading">
+        02 · How do Iran and Canada compare?
+      </h2>
+
+      <p class="chart-description">
+        Original annual observations for two illustrative countries.
+        Both lines share the same axes. Missing values create gaps.
+      </p>
+
+      <div id="comparison-chart" class="exploration-chart"></div>
+      <p id="comparison-note" class="chart-note"></p>
+    </section>
+
+    <section id="chart3-section">
+      <h2 class="chart-heading">
+        03 · How do earlier and recent period averages compare?
+      </h2>
+
+      <p class="chart-description">
+        Mean annual anomaly in 1961–1980 versus 2005–2024
+        for six illustrative countries. Each mean requires at least
+        16 of the 20 annual observations. Countries are ordered
+        by their recent-period mean.
+      </p>
+
+      <div id="period-chart" class="exploration-chart"></div>
+      <p id="period-note" class="chart-note"></p>
+    </section>
+
+    <section id="chart4-section">
+      <h2 class="chart-heading">
+        04 · How widely do 2024 anomalies vary across locations?
+      </h2>
+
+      <p class="chart-description">
+        Histogram of available 2024 anomalies for rows with a
+        three-letter ISO3 code. This operational filter excludes
+        aggregate codes; it includes countries and territories.
+        Each retained location receives equal weight.
+      </p>
+
+      <div id="distribution-chart" class="exploration-chart"></div>
+      <p id="distribution-note" class="chart-note"></p>
+    </section>
+
+    <section id="chart5-section">
+      <h2 class="chart-heading">
+        05 · When do warmer years appear across selected countries?
+      </h2>
+
+      <p class="chart-description">
+        One cell per country and year for the same six illustrative
+        countries. Color encodes annual anomaly using a symmetric
+        scale centered on zero. Gray cells indicate missing values.
+      </p>
+
+      <div id="heatmap-chart" class="exploration-chart"></div>
+      <p id="heatmap-note" class="chart-note"></p>
+    </section>
+
+    <section id="chart6-section">
+      <h2 class="chart-heading">
+        06 · How complete is the annual record?
+      </h2>
+
+      <p class="chart-description">
+        Percentage of country and territory rows with a missing
+        annual value, by year. The denominator is the same
+        ISO3-filtered set in every year. Missing values are
+        neither filled nor replaced with zero.
+      </p>
+
+      <div id="missing-chart" class="exploration-chart"></div>
+      <p id="missing-note" class="chart-note"></p>
+    </section>
+
+    <footer>
+      <p>
+        Source: supplied IMF Climate Change Indicators CSV,
+        using FAOSTAT data. All temperature values are anomalies
+        in °C relative to the 1951–1980 baseline, not absolute
+        temperatures. Country selections are illustrative,
+        not a representative sample. Vertical scales differ
+        between charts; read each axis before comparing.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    const PURPLE = "#7952B3";
+    const ORANGE = "#C16A20";
+    const INK = "#292442";
+    const MUTED = "#68637c";
+    const GRID = "#ece8f2";
+    const MISSING = "#d9dce3";
+
+    const formatValue = d3.format("+.3f");
+    const formatShort = d3.format("+.2f");
+
+    const selectedCountries = [
+      { iso3: "IRN", label: "Iran" },
+      { iso3: "CAN", label: "Canada" },
+      { iso3: "USA", label: "United States" },
+      { iso3: "IND", label: "India" },
+      { iso3: "BRA", label: "Brazil" },
+      { iso3: "AUS", label: "Australia" }
+    ];
+
+    function parseValue(raw) {
+      const text = String(raw ?? "").trim();
+
+      if (text === "") return null;
+
+      const value = Number(text);
+      return Number.isFinite(value) ? value : null;
+    }
+
+    function createSvg(selector, title, options = {}) {
+      const width = options.width ?? 1000;
+      const height = options.height ?? 420;
+      const margin = options.margin ?? {
+        top: 35,
+        right: 35,
+        bottom: 55,
+        left: 65
+      };
+
+      const root = d3.select(selector);
+      root.selectAll("*").remove();
+
+      const svg = root.append("svg")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("role", "img")
+        .attr("aria-label", title);
+
+      svg.append("title").text(title);
+
+      return { root, svg, width, height, margin };
+    }
+
+    function styleAxis(group, showDomain = false) {
+      group.selectAll(".tick line").remove();
+
+      group.selectAll(".tick text")
+        .attr("fill", MUTED)
+        .style("font-size", "12px");
+
+      if (showDomain) {
+        group.select(".domain").attr("stroke", "#cbd5df");
+      } else {
+        group.select(".domain").remove();
+      }
+    }
+
+    function addGrid(chart, y) {
+      const { svg, width, margin } = chart;
+
+      const grid = svg.append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(
+          d3.axisLeft(y)
+            .ticks(6)
+            .tickSize(-(width - margin.left - margin.right))
+            .tickFormat("")
+        );
+
+      grid.select(".domain").remove();
+      grid.selectAll("line").attr("stroke", GRID);
+    }
+
+    function yearTicks(years) {
+      const first = years[0];
+      const last = years[years.length - 1];
+
+      return Array.from(new Set([
+        first,
+        ...d3.ticks(first, last, 7).filter(Number.isInteger),
+        last
+      ])).sort((a, b) => a - b);
+    }
+
+    function addTimeAxes(chart, x, y, years, yLabel) {
+      const { svg, width, height, margin } = chart;
+
+      const xAxis = svg.append("g")
+        .attr(
+          "transform",
+          `translate(0,${height - margin.bottom})`
+        )
+        .call(
+          d3.axisBottom(x)
+            .tickValues(yearTicks(years))
+            .tickFormat(d3.format("d"))
+        );
+
+      styleAxis(xAxis, true);
+
+      const yAxis = svg.append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y).ticks(6));
+
+      styleAxis(yAxis);
+
+      svg.append("text")
+        .attr("x", margin.left)
+        .attr("y", 17)
+        .attr("fill", MUTED)
+        .style("font-size", "12px")
+        .text(yLabel);
+
+      svg.append("text")
+        .attr("x", width - margin.right)
+        .attr("y", height - 10)
+        .attr("text-anchor", "end")
+        .attr("fill", MUTED)
+        .style("font-size", "12px")
+        .text("Year");
+    }
+
+    function addZeroLine(chart, y) {
+      const { svg, width, margin } = chart;
+
+      svg.append("line")
+        .attr("x1", margin.left)
+        .attr("x2", width - margin.right)
+        .attr("y1", y(0))
+        .attr("y2", y(0))
+        .attr("stroke", "#9690a5")
+        .attr("stroke-dasharray", "4 4");
+    }
+
+    function addLegend(root, entries) {
+      const legend = root.append("div").attr("class", "legend");
+
+      entries.forEach(entry => {
+        const item = legend.append("div")
+          .attr("class", "legend-item");
+
+        item.append("svg")
+          .attr("viewBox", "0 0 32 12")
+          .attr("aria-hidden", "true")
+          .append("line")
+          .attr("x1", 0)
+          .attr("x2", 32)
+          .attr("y1", 6)
+          .attr("y2", 6)
+          .attr("stroke", entry.color)
+          .attr("stroke-width", 3)
+          .attr("stroke-dasharray", entry.dashed ? "7 4" : null);
+
+        item.append("span")
+          .style("color", entry.color)
+          .text(entry.label);
+      });
+
+      return legend;
+    }
+
+    function drawSeries(chart, values, x, y, options = {}) {
+      const color = options.color ?? PURPLE;
+
+      const line = d3.line()
+        .defined(d => d.value !== null)
+        .x(d => x(d.year))
+        .y(d => y(d.value));
+
+      chart.svg.append("path")
+        .datum(values)
+        .attr("fill", "none")
+        .attr("stroke", color)
+        .attr("stroke-width", 2.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-dasharray", options.dashed ? "7 4" : null)
+        .attr("d", line);
+
+      chart.svg.append("g")
+        .selectAll("circle")
+        .data(values.filter(d => d.value !== null))
+        .join("circle")
+        .attr("cx", d => x(d.year))
+        .attr("cy", d => y(d.value))
+        .attr("r", 3)
+        .attr("fill", color)
+        .append("title")
+        .text(d =>
+          `${options.label ?? ""}\n${d.year}: ` +
+          `${formatValue(d.value)} °C`
+        );
+    }
+
+    function drawWorld(locations, years) {
+      const world = locations.find(
+        d => d.name.trim().toLowerCase() === "world"
+      );
+
+      if (!world) throw new Error("World row not found.");
+
+      const chart = createSvg(
+        "#world-chart",
+        "World annual temperature anomalies, 1961–2024"
+      );
+
+      const available = world.values.filter(d => d.value !== null);
+
+      if (!available.length) {
+        throw new Error("World has no numeric values.");
+      }
+
+      const x = d3.scaleLinear()
+        .domain(d3.extent(years))
+        .range([
+          chart.margin.left,
+          chart.width - chart.margin.right
+        ]);
+
+      const y = d3.scaleLinear()
+        .domain([
+          Math.min(0, d3.min(available, d => d.value)) - 0.15,
+          Math.max(0, d3.max(available, d => d.value)) + 0.2
+        ])
+        .nice()
+        .range([
+          chart.height - chart.margin.bottom,
+          chart.margin.top
+        ]);
+
+      addGrid(chart, y);
+      addTimeAxes(chart, x, y, years, "Temperature anomaly (°C)");
+      addZeroLine(chart, y);
+
+      drawSeries(chart, world.values, x, y, { label: "World" });
+
+      const latest = available[available.length - 1];
+
+      chart.svg.append("circle")
+        .attr("cx", x(latest.year))
+        .attr("cy", y(latest.value))
+        .attr("r", 5)
+        .attr("fill", ORANGE)
+        .attr("stroke", "white")
+        .attr("stroke-width", 2);
+
+      chart.svg.append("text")
+        .attr("x", x(latest.year) - 10)
+        .attr("y", y(latest.value) - 14)
+        .attr("text-anchor", "end")
+        .attr("fill", ORANGE)
+        .style("font-size", "13px")
+        .style("font-weight", "700")
+        .text(
+          `${latest.year}: ${formatValue(latest.value)} °C`
+        );
+
+      d3.select("#world-note").text(
+        `${available.length}/${years.length} observations available. ` +
+        "Zero marks the baseline average."
+      );
+    }
+
+    function drawComparison(locations, years) {
+      const specifications = [
+        { iso3: "IRN", label: "Iran", color: PURPLE },
+        { iso3: "CAN", label: "Canada", color: ORANGE }
+      ];
+
+      const series = specifications.map(spec => {
+        const location = locations.find(d => d.iso3 === spec.iso3);
+        if (!location) throw new Error(`${spec.label} not found.`);
+        return { ...spec, values: location.values };
+      });
+
+      const chart = createSvg(
+        "#comparison-chart",
+        "Annual temperature anomalies for Iran and Canada"
+      );
+
+      const legend = addLegend(
+        chart.root,
+        series.map((d, i) => ({ ...d, dashed: i === 1 }))
+      );
+
+      // Place the legend before the SVG.
+      chart.root.node().insertBefore(
+        legend.node(),
+        chart.svg.node()
+      );
+
+      const values = series.flatMap(d =>
+        d.values.filter(v => v.value !== null).map(v => v.value)
+      );
+
+      const x = d3.scaleLinear()
+        .domain(d3.extent(years))
+        .range([
+          chart.margin.left,
+          chart.width - chart.margin.right
+        ]);
+
+      const y = d3.scaleLinear()
+        .domain([
+          Math.min(0, d3.min(values)) - 0.2,
+          Math.max(0, d3.max(values)) + 0.2
+        ])
+        .nice()
+        .range([
+          chart.height - chart.margin.bottom,
+          chart.margin.top
+        ]);
+
+      addGrid(chart, y);
+      addTimeAxes(chart, x, y, years, "Temperature anomaly (°C)");
+      addZeroLine(chart, y);
+
+      series.forEach((country, index) => {
+        drawSeries(chart, country.values, x, y, {
+          color: country.color,
+          dashed: index === 1,
+          label: country.label
+        });
+      });
+
+      d3.select("#comparison-note").text(
+        series.map(country =>
+          `${country.label}: ` +
+          `${country.values.filter(d => d.value !== null).length}` +
+          `/${years.length} observations`
+        ).join(" · ") +
+        ". This pair illustrates why users may want to compare " +
+        "locations directly."
+      );
+    }
+
+    function drawPeriods(locations) {
+      function summarize(location, start, end) {
+        const values = location.values.filter(d =>
+          d.year >= start &&
+          d.year <= end &&
+          d.value !== null
+        );
+
+        return {
+          count: values.length,
+          mean: values.length >= 16
+            ? d3.mean(values, d => d.value)
+            : null
+        };
+      }
+
+      const summaries = selectedCountries.map(spec => {
+        const location = locations.find(d => d.iso3 === spec.iso3);
+        if (!location) return null;
+
+        return {
+          label: spec.label,
+          early: summarize(location, 1961, 1980),
+          recent: summarize(location, 2005, 2024)
+        };
+      }).filter(Boolean);
+
+      const retained = summaries.filter(d =>
+        d.early.mean !== null && d.recent.mean !== null
+      ).sort((a, b) => d3.descending(a.recent.mean, b.recent.mean));
+
+      if (!retained.length) {
+        throw new Error("Insufficient data for period comparisons.");
+      }
+
+      const chart = createSvg(
+        "#period-chart",
+        "Earlier and recent period means for six selected countries",
+        {
+          height: 420,
+          margin: { top: 35, right: 60, bottom: 65, left: 135 }
+        }
+      );
+
+      const legend = addLegend(chart.root, [
+        { label: "1961–1980", color: PURPLE },
+        { label: "2005–2024", color: ORANGE }
+      ]);
+
+      chart.root.node().insertBefore(legend.node(), chart.svg.node());
+
+      const allMeans = retained.flatMap(d => [
+        d.early.mean, d.recent.mean
+      ]);
+
+      const x = d3.scaleLinear()
+        .domain([
+          Math.min(0, d3.min(allMeans)) - 0.2,
+          Math.max(0, d3.max(allMeans)) + 0.3
+        ])
+        .nice()
+        .range([
+          chart.margin.left,
+          chart.width - chart.margin.right
+        ]);
+
+      const y = d3.scalePoint()
+        .domain(retained.map(d => d.label))
+        .range([
+          chart.margin.top,
+          chart.height - chart.margin.bottom
+        ])
+        .padding(0.6);
+
+      const grid = chart.svg.append("g")
+        .attr(
+          "transform",
+          `translate(0,${chart.height - chart.margin.bottom})`
+        )
+        .call(
+          d3.axisBottom(x)
+            .ticks(6)
+            .tickSize(
+              -(chart.height -
+                chart.margin.top -
+                chart.margin.bottom)
+            )
+            .tickFormat("")
+        );
+
+      grid.select(".domain").remove();
+      grid.selectAll("line").attr("stroke", GRID);
+
+      const xAxis = chart.svg.append("g")
+        .attr(
+          "transform",
+          `translate(0,${chart.height - chart.margin.bottom})`
+        )
+        .call(d3.axisBottom(x).ticks(6));
+
+      styleAxis(xAxis, true);
+
+      const yAxis = chart.svg.append("g")
+        .attr(
+          "transform",
+          `translate(${chart.margin.left - 12},0)`
+        )
+        .call(d3.axisLeft(y));
+
+      styleAxis(yAxis);
+
+      chart.svg.append("g")
+        .selectAll("line")
+        .data(retained)
+        .join("line")
+        .attr("x1", d => x(d.early.mean))
+        .attr("x2", d => x(d.recent.mean))
+        .attr("y1", d => y(d.label))
+        .attr("y2", d => y(d.label))
+        .attr("stroke", "#bfb4d0")
+        .attr("stroke-width", 3);
+
+      ["early", "recent"].forEach((period, index) => {
+        chart.svg.append("g")
+          .selectAll("circle")
+          .data(retained)
+          .join("circle")
+          .attr("cx", d => x(d[period].mean))
+          .attr("cy", d => y(d.label))
+          .attr("r", 6)
+          .attr("fill", index === 0 ? PURPLE : ORANGE)
+          .attr("stroke", "white")
+          .attr("stroke-width", 1.5)
+          .append("title")
+          .text(d =>
+            `${d.label}\n` +
+            `${period === "early" ? "1961–1980" : "2005–2024"}: ` +
+            `${formatValue(d[period].mean)} °C\n` +
+            `${d[period].count}/20 annual observations`
+          );
+      });
+
+      chart.svg.append("text")
+        .attr("x", chart.width - chart.margin.right)
+        .attr("y", chart.height - 15)
+        .attr("text-anchor", "end")
+        .attr("fill", MUTED)
+        .style("font-size", "12px")
+        .text("Mean temperature anomaly (°C)");
+
+      d3.select("#period-note").text(
+        `${retained.length} selected countries meet the coverage rule. ` +
+        retained.map(d =>
+          `${d.label}: ${d.early.count}/20 earlier, ` +
+          `${d.recent.count}/20 recent`
+        ).join("; ") +
+        ". Periods are descriptive comparisons, not the baseline definition."
+      );
+    }
+
+    function drawDistribution(countryRows) {
+      const values = countryRows
+        .map(d => d.values.find(v => v.year === 2024)?.value)
+        .filter(v => v !== null && Number.isFinite(v));
+
+      if (!values.length) throw new Error("No 2024 observations.");
+
+      const chart = createSvg(
+        "#distribution-chart",
+        "Distribution of 2024 country and territory anomalies"
+      );
+
+      const x = d3.scaleLinear()
+        .domain([
+          Math.min(0, d3.min(values)),
+          Math.max(0, d3.max(values))
+        ])
+        .nice()
+        .range([
+          chart.margin.left,
+          chart.width - chart.margin.right
+        ]);
+
+      // Explicit half-degree bin boundaries.
+      const boundaries = d3.range(
+        Math.ceil(x.domain()[0] * 2) / 2,
+        x.domain()[1],
+        0.5
+      ).filter(v => v > x.domain()[0]);
+
+      const bins = d3.bin()
+        .domain(x.domain())
+        .thresholds(boundaries)(values);
+
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(bins, d => d.length)])
+        .nice()
+        .range([
+          chart.height - chart.margin.bottom,
+          chart.margin.top
+        ]);
+
+      addGrid(chart, y);
+
+      chart.svg.append("g")
+        .selectAll("rect")
+        .data(bins)
+        .join("rect")
+        .attr("x", d => x(d.x0) + 1)
+        .attr("y", d => y(d.length))
+        .attr("width", d => Math.max(0, x(d.x1) - x(d.x0) - 2))
+        .attr("height", d => y(0) - y(d.length))
+        .attr("fill", PURPLE)
+        .attr("opacity", 0.85)
+        .append("title")
+        .text(d =>
+          `${d.x0.toFixed(1)} to ${d.x1.toFixed(1)} °C\n` +
+          `${d.length} locations`
+        );
+
+      const xAxis = chart.svg.append("g")
+        .attr(
+          "transform",
+          `translate(0,${chart.height - chart.margin.bottom})`
+        )
+        .call(d3.axisBottom(x).ticks(8));
+
+      styleAxis(xAxis, true);
+
+      const yAxis = chart.svg.append("g")
+        .attr("transform", `translate(${chart.margin.left},0)`)
+        .call(d3.axisLeft(y).ticks(6).tickFormat(d3.format("d")));
+
+      styleAxis(yAxis);
+
+      chart.svg.append("text")
+        .attr("x", chart.margin.left)
+        .attr("y", 17)
+        .attr("fill", MUTED)
+        .style("font-size", "12px")
+        .text("Number of locations");
+
+      chart.svg.append("text")
+        .attr("x", chart.width - chart.margin.right)
+        .attr("y", chart.height - 10)
+        .attr("text-anchor", "end")
+        .attr("fill", MUTED)
+        .style("font-size", "12px")
+        .text("2024 temperature anomaly (°C)");
+
+      d3.select("#distribution-note").text(
+        `${values.length} of ${countryRows.length} retained locations ` +
+        `have 2024 data; ${countryRows.length - values.length} are missing. ` +
+        "Bins use 0.5°C boundaries; edge bins may be shorter. " +
+        `Median across available locations: ` +
+        `${formatShort(d3.median(values))} °C. ` +
+        "This equally weighted distribution is not a global temperature estimate."
+      );
+    }
+
+    function drawHeatmap(locations, years) {
+      const selected = selectedCountries.map(spec => {
+        const location = locations.find(d => d.iso3 === spec.iso3);
+        return location ? { ...spec, values: location.values } : null;
+      }).filter(Boolean);
+
+      const chart = createSvg(
+        "#heatmap-chart",
+        "Annual temperature anomaly heatmap for six selected countries",
+        {
+          height: 370,
+          margin: { top: 20, right: 30, bottom: 125, left: 135 }
+        }
+      );
+
+      const x = d3.scaleBand()
+        .domain(years)
+        .range([
+          chart.margin.left,
+          chart.width - chart.margin.right
+        ])
+        .paddingInner(0.05);
+
+      const y = d3.scaleBand()
+        .domain(selected.map(d => d.label))
+        .range([
+          chart.margin.top,
+          chart.height - chart.margin.bottom
+        ])
+        .paddingInner(0.12);
+
+      const cells = selected.flatMap(country =>
+        country.values.map(d => ({
+          ...d,
+          label: country.label
+        }))
+      );
+
+      const maximumAbsolute = d3.max(
+        cells.filter(d => d.value !== null),
+        d => Math.abs(d.value)
+      );
+
+      const limit = Math.max(0.5, Math.ceil(maximumAbsolute * 2) / 2);
+
+      const color = d3.scaleLinear()
+        .domain([-limit, 0, limit])
+        .range(["#287C96", "#F7F5F0", "#B95525"])
+        .interpolate(d3.interpolateLab)
+        .clamp(true);
+
+      chart.svg.append("g")
+        .selectAll("rect")
+        .data(cells)
+        .join("rect")
+        .attr("x", d => x(d.year))
+        .attr("y", d => y(d.label))
+        .attr("width", x.bandwidth())
+        .attr("height", y.bandwidth())
+        .attr("fill", d =>
+          d.value === null ? MISSING : color(d.value)
+        )
+        .append("title")
+        .text(d =>
+          `${d.label}, ${d.year}\n` +
+          (d.value === null
+            ? "Missing observation"
+            : `${formatValue(d.value)} °C`)
+        );
+
+      const yAxis = chart.svg.append("g")
+        .attr("transform", `translate(${chart.margin.left - 10},0)`)
+        .call(d3.axisLeft(y));
+
+      styleAxis(yAxis);
+
+      const xAxis = chart.svg.append("g")
+        .attr(
+          "transform",
+          `translate(0,${chart.height - chart.margin.bottom})`
+        )
+        .call(
+          d3.axisBottom(x)
+            .tickValues(yearTicks(years))
+            .tickFormat(d3.format("d"))
+        );
+
+      styleAxis(xAxis);
+
+      const legendX = chart.margin.left;
+      const legendY = chart.height - 65;
+      const legendWidth = 280;
+      const steps = 100;
+
+      chart.svg.append("text")
+        .attr("x", legendX)
+        .attr("y", legendY - 10)
+        .attr("fill", MUTED)
+        .style("font-size", "12px")
+        .text("Temperature anomaly (°C)");
+
+      chart.svg.append("g")
+        .selectAll("rect")
+        .data(d3.range(steps))
+        .join("rect")
+        .attr("x", d => legendX + d * legendWidth / steps)
+        .attr("y", legendY)
+        .attr("width", legendWidth / steps + 0.5)
+        .attr("height", 12)
+        .attr("fill", d =>
+          color(-limit + (d + 0.5) / steps * limit * 2)
+        );
+
+      const legendScale = d3.scaleLinear()
+        .domain([-limit, limit])
+        .range([legendX, legendX + legendWidth]);
+
+      const legendAxis = chart.svg.append("g")
+        .attr("transform", `translate(0,${legendY + 12})`)
+        .call(
+          d3.axisBottom(legendScale)
+            .tickValues([-limit, 0, limit])
+            .tickFormat(d3.format(".1f"))
+        );
+
+      styleAxis(legendAxis);
+
+      chart.svg.append("rect")
+        .attr("x", legendX + legendWidth + 45)
+        .attr("y", legendY)
+        .attr("width", 14)
+        .attr("height", 12)
+        .attr("fill", MISSING);
+
+      chart.svg.append("text")
+        .attr("x", legendX + legendWidth + 66)
+        .attr("y", legendY + 10)
+        .attr("fill", MUTED)
+        .style("font-size", "12px")
+        .text("Missing");
+
+      d3.select("#heatmap-note").text(
+        "Rows retain the stated illustrative country selection; " +
+        "they are not ranked. Hover over cells for exact values. " +
+        "The centered color scale distinguishes below-baseline " +
+        "from above-baseline years."
+      );
+    }
+
+    function drawMissing(countryRows, years) {
+      if (!countryRows.length) {
+        throw new Error("No ISO3-filtered locations found.");
+      }
+
+      const data = years.map((year, index) => {
+        const missing = countryRows.filter(
+          location => location.values[index].value === null
+        ).length;
+
+        return {
+          year,
+          missing,
+          value: missing / countryRows.length * 100
+        };
+      });
+
+      const chart = createSvg(
+        "#missing-chart",
+        "Percentage of missing annual values by year"
+      );
+
+      const x = d3.scaleLinear()
+        .domain(d3.extent(years))
+        .range([
+          chart.margin.left,
+          chart.width - chart.margin.right
+        ]);
+
+      const y = d3.scaleLinear()
+        .domain([0, Math.max(5, d3.max(data, d => d.value))])
+        .nice()
+        .range([
+          chart.height - chart.margin.bottom,
+          chart.margin.top
+        ]);
+
+      addGrid(chart, y);
+      addTimeAxes(chart, x, y, years, "Locations with missing data (%)");
+
+      const area = d3.area()
+        .x(d => x(d.year))
+        .y0(y(0))
+        .y1(d => y(d.value));
+
+      chart.svg.append("path")
+        .datum(data)
+        .attr("fill", "#ede7f7")
+        .attr("d", area);
+
+      drawSeries(chart, data, x, y, {
+        color: PURPLE,
+        label: "Missing data (%)"
+      });
+
+      const totalMissing = d3.sum(data, d => d.missing);
+      const totalPossible = countryRows.length * years.length;
+
+      d3.select("#missing-note").text(
+        `Fixed denominator: ${countryRows.length} countries and territories. ` +
+        `${totalMissing.toLocaleString()} of ` +
+        `${totalPossible.toLocaleString()} annual cells are missing ` +
+        `(${(totalMissing / totalPossible * 100).toFixed(1)}%). ` +
+        "Missingness can also reflect historical coverage or changes " +
+        "in geographic entities; it should not be interpreted solely " +
+        "as a data-quality failure."
+      );
+    }
+
+    async function initialize() {
+      const status = document.querySelector("#status");
+
+      try {
+        const rows = await d3.csv("./data/climate_temperature.csv");
+
+        const years = rows.columns
+          .filter(column => /^\d{4}$/.test(column))
+          .map(Number)
+          .sort((a, b) => a - b);
+
+        if (!rows.length || !years.length) {
+          throw new Error("No data or year columns found.");
+        }
+
+        const locations = rows.map(row => ({
+          name: row.Country,
+          iso3: String(row.ISO3 ?? "").trim(),
+          values: years.map(year => ({
+            year,
+            value: parseValue(row[String(year)])
+          }))
+        }));
+
+        // Operational country/territory filter.
+        // Aggregate codes such as AFRTMP do not pass this rule.
+        const countryRows = locations.filter(
+          location => /^[A-Z]{3}$/.test(location.iso3)
+        );
+
+        const jobs = [
+          ["World", () => drawWorld(locations, years)],
+          ["Comparison", () => drawComparison(locations, years)],
+          ["Period averages", () => drawPeriods(locations)],
+          ["Distribution", () => drawDistribution(countryRows)],
+          ["Heatmap", () => drawHeatmap(locations, years)],
+          ["Missing data", () => drawMissing(countryRows, years)]
+        ];
+
+        const errors = [];
+
+        jobs.forEach(([name, draw]) => {
+          try {
+            draw();
+          } catch (error) {
+            console.error(`${name}:`, error);
+            errors.push(name);
+          }
+        });
+
+        status.textContent = errors.length
+          ? `${jobs.length - errors.length}/6 charts loaded. ` +
+            `Check the browser console for: ${errors.join(", ")}.`
+          : "All six exploratory charts loaded successfully.";
+
+      } catch (error) {
+        console.error(error);
+
+        status.textContent =
+          "Could not load the data. Check the CSV filename and " +
+          "internet connection. Open this page using Live Server.";
+      }
+    }
+
+    initialize();
+  </script>
+</body>
+</html>
