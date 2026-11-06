@@ -7,32 +7,266 @@
   <title>Temperature Change Explorer</title>
 
   <link rel="stylesheet" href="./style.css">
+
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script type="module" src="./main.js"></script>
+
+  <style>
+    .report-section h2 {
+      margin-top: 0;
+      color: #292442;
+      font-size: 24px;
+    }
+
+    .report-section h3 {
+      margin-top: 26px;
+      color: #45345f;
+      font-size: 18px;
+    }
+
+    .report-section p {
+      max-width: 78ch;
+      color: #526575;
+      line-height: 1.8;
+    }
+
+    .report-section a,
+    header a,
+    footer a {
+      color: #7952b3;
+    }
+
+    header .author {
+      color: #68637c;
+      font-size: 14px;
+    }
+
+    .report-section {
+      margin-top: 24px;
+    }
+  </style>
 </head>
 
 <body>
   <main>
     <header>
       <p>DSC 209 · Project 3</p>
+
       <h1>Temperature Change Explorer</h1>
+
       <p>
-        How do annual temperature changes differ across
-        countries over time?
+        How do annual temperature anomalies differ across
+        locations and time periods?
       </p>
+
+      <p class="author">By Negar Ashktorab</p>
     </header>
 
     <p id="status" role="status">Loading data…</p>
 
-    <section aria-label="Visualization">
+    <section aria-label="Interactive temperature visualization">
       <div id="chart"></div>
+    </section>
+
+    <section
+      class="report-section"
+      aria-labelledby="purpose-title"
+    >
+      <h2 id="purpose-title">Question and audience</h2>
+
+      <p>
+        This visualization explores how annual temperature anomalies
+        differ across locations and time periods. It is intended
+        for readers who want to compare climate records without
+        working directly with a spreadsheet. Users can select two
+        locations and a year range to examine similarities,
+        differences, and year-to-year variation.
+      </p>
+
+      <p>
+        The exploratory charts examine the World record, country
+        comparisons, period averages, the distribution of recent
+        anomalies, yearly patterns, and missing observations.
+        The interactive design focuses on comparing two records
+        at a time so that the display remains readable.
+      </p>
+
+      <p>
+        <a href="./exploration.html">
+          View the six exploratory charts →
+        </a>
+      </p>
+    </section>
+
+    <section
+      class="report-section"
+      aria-labelledby="design-title"
+    >
+      <h2 id="design-title">Design decisions</h2>
+
+      <h3>Lines and shared axes</h3>
+
+      <p>
+        Horizontal position represents year, and vertical position
+        represents temperature anomaly in degrees Celsius. Lines
+        connect consecutive available annual observations to show
+        how each record changes over time. Both locations share
+        the same axes, supporting direct comparison.
+      </p>
+
+      <p>
+        The vertical scale remains fixed across location and year
+        selections. This prevents changes in scale from making
+        one selection appear more variable than another.
+        The tradeoff is extra empty space for locations with a
+        narrower range of values.
+      </p>
+
+      <h3>Color and line style</h3>
+
+      <p>
+        Purple identifies the first selection and orange identifies
+        the second. A solid line and a dashed line provide an
+        additional distinction, so color is not the only way to
+        identify the records. The legend and control labels use
+        the same colors as their corresponding lines.
+      </p>
+
+      <h3>Interactive exploration</h3>
+
+      <p>
+        Two location menus let readers choose their own comparison.
+        The year controls allow them to examine shorter periods
+        within the full record. Hovering over a point reveals its
+        location, year, and exact value. The Reset years button
+        restores the complete time range.
+      </p>
+
+      <p>
+        These controls support different questions without
+        displaying every location at once. For example, readers
+        can compare two countries over the full record, then
+        narrow the period to inspect recent annual variation.
+        Selecting the same location twice displays a message
+        explaining that the lines overlap.
+      </p>
+
+      <h3>Alternatives and tradeoffs</h3>
+
+      <p>
+        Plotting every location at once would create substantial
+        overlap. A map could show geographic patterns for a
+        particular year, but would make detailed comparison over
+        time more difficult. The two-line design prioritizes
+        temporal comparison while keeping the interface focused.
+      </p>
+
+      <p>
+        Dropdown menus provide precise selections, although they
+        require more steps than directly brushing a time interval.
+        Showing individual annual observations preserves
+        short-term variation, but it also produces a less smooth
+        display than a moving average.
+      </p>
+    </section>
+
+    <section
+      class="report-section"
+      aria-labelledby="data-title"
+    >
+      <h2 id="data-title">Data and transformations</h2>
+
+      <p>
+        The supplied IMF Climate Change Indicators dataset contains
+        annual temperature anomalies from 1961 through 2024,
+        using FAOSTAT data. Values are measured relative to the
+        1951–1980 baseline. A value of zero means the baseline
+        average, not an absolute temperature of zero degrees Celsius.
+      </p>
+
+      <p>
+        The original CSV stores each year in a separate column.
+        The JavaScript converts these columns into annual records
+        for each location and parses available values as numbers.
+        Empty or invalid values remain missing. They are not
+        replaced with zero, and the lines break at missing years.
+        No smoothing or filling of missing observations is applied.
+      </p>
+
+      <p>
+        Selecting a year range filters the observations displayed
+        in the chart. Availability counts report how many annual
+        observations exist within that range. The menu includes
+        countries, territories, and supplied regional aggregates;
+        these geographic units should be distinguished when
+        interpreting a comparison.
+      </p>
+
+      <h3>Interpretation and limitations</h3>
+
+      <p>
+        These values describe differences from each location's
+        baseline climate. They do not show which location has the
+        higher absolute temperature. Short periods may emphasize
+        temporary fluctuations, so readers should also examine
+        the complete record. The visualization describes patterns
+        and does not establish their causes.
+      </p>
+
+      <p>
+        Data coverage differs across locations and years.
+        Missing observations can limit comparisons. Regional
+        aggregates are taken directly from the supplied dataset;
+        this visualization does not calculate them by averaging
+        the country records.
+      </p>
+    </section>
+
+    <section
+      class="report-section"
+      aria-labelledby="process-title"
+    >
+      <h2 id="process-title">Development process</h2>
+
+      <p>
+        I worked individually on this project, using AI assistance
+        to help develop and revise the code. I explored the dataset,
+        implemented the suggested changes, and checked the results
+        in the browser. I adjusted the colors and tested the
+        location selectors, year filters, tooltips, and Reset button.
+      </p>
+
+      <p>
+        I spent approximately four hours on the project. About three
+        hours were spent understanding and preparing the data.
+        The remaining hour was spent on implementation, styling,
+        and checking the visualization.
+      </p>
+
+      <p>
+        Data preparation was the most challenging part because
+        the original CSV stored each year in a separate column.
+        The code converts these columns into annual records for
+        each location. Missing values are preserved as gaps rather
+        than converted to zero, which avoids displaying
+        observations that do not exist.
+      </p>
     </section>
 
     <footer>
       <p>
-        Source: IMF Climate Change Indicators, using FAOSTAT data.
-        Temperature changes are measured in °C relative to
-        the 1951–1980 baseline.
+        Source:
+        <a href="https://climatedata.imf.org/">
+          IMF Climate Change Indicators
+        </a>,
+        using FAOSTAT data.
+        Annual anomalies are measured in °C relative to 1951–1980.
+      </p>
+
+      <p>
+        <a href="./data/climate_temperature.csv" download>
+          Download the supplied CSV
+        </a>
       </p>
     </footer>
   </main>
