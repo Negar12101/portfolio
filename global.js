@@ -12,49 +12,50 @@ const BASE_PATH =
     : '/portfolio/';
 
 // Navigation pages
-let pages = [
+const pages = [
   { url: '', title: 'Home' },
   { url: 'projects/', title: 'Projects' },
   { url: 'contact/', title: 'Contact' },
   { url: 'resume/', title: 'Resume' },
+  { url: 'meta/', title: 'Meta' },
   { url: 'https://github.com/negar12101', title: 'GitHub' }
 ];
-
-// Create navigation
-let nav = document.createElement('nav');
-document.body.prepend(nav);
 
 // Treat index.html and its directory as the same page
 function normalizePath(path) {
   return path.replace(/index\.html$/, '');
 }
 
-// Create links
-for (let page of pages) {
-  let url = page.url;
+// Create navigation
+const nav = document.createElement('nav');
+document.body.prepend(nav);
 
-  if (!url.startsWith('http')) {
-    url = BASE_PATH + url;
-  }
+for (const page of pages) {
+  const url = page.url.startsWith('http')
+    ? page.url
+    : BASE_PATH + page.url;
 
-  let a = document.createElement('a');
-  a.href = url;
-  a.textContent = page.title;
+  const link = document.createElement('a');
+  link.href = url;
+  link.textContent = page.title;
 
   if (
-    a.host === location.host &&
-    normalizePath(a.pathname) === normalizePath(location.pathname)
+    link.host === location.host &&
+    normalizePath(link.pathname) === normalizePath(location.pathname)
   ) {
-    a.classList.add('current');
+    link.classList.add('current');
+    link.setAttribute('aria-current', 'page');
   }
 
-  if (a.host !== location.host) {
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
+  if (link.host !== location.host) {
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
   }
 
-  nav.append(a);
+  nav.append(link);
 }
+
+// Create theme selector
 document.body.insertAdjacentHTML(
   'afterbegin',
   `
@@ -68,6 +69,7 @@ document.body.insertAdjacentHTML(
   </label>
   `
 );
+
 const select = document.querySelector('.color-scheme select');
 
 function setColorScheme(colorScheme) {
@@ -79,18 +81,20 @@ function setColorScheme(colorScheme) {
   select.value = colorScheme;
 }
 
-// Restore the saved preference
+// Restore saved theme
 if ('colorScheme' in localStorage) {
   setColorScheme(localStorage.colorScheme);
 }
 
-// Apply and save changes
+// Apply and save theme changes
 select.addEventListener('input', (event) => {
   const colorScheme = event.target.value;
 
   setColorScheme(colorScheme);
   localStorage.colorScheme = colorScheme;
 });
+
+// Handle contact form
 const form = document.querySelector('form[action^="mailto:"]');
 
 form?.addEventListener('submit', (event) => {
@@ -108,6 +112,8 @@ form?.addEventListener('submit', (event) => {
   const url = `${form.action}?${parameters.join('&')}`;
   location.href = url;
 });
+
+// Fetch and parse JSON
 export async function fetchJSON(url) {
   try {
     const response = await fetch(url);
@@ -118,13 +124,14 @@ export async function fetchJSON(url) {
       );
     }
 
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error('Error fetching or parsing JSON data:', error);
     throw error;
   }
 }
+
+// Render project cards
 export function renderProjects(
   projects,
   containerElement,
@@ -160,20 +167,21 @@ export function renderProjects(
 
     const details = document.createElement('div');
 
-const description = document.createElement('p');
-description.textContent =
-  project.description || 'No description available.';
+    const description = document.createElement('p');
+    description.textContent =
+      project.description || 'No description available.';
 
-const year = document.createElement('p');
-year.className = 'project-year';
-year.textContent = project.year ?? 'Year not specified';
+    const year = document.createElement('p');
+    year.className = 'project-year';
+    year.textContent = project.year ?? 'Year not specified';
 
-details.append(description, year);
-
-article.append(heading, image, details);
-containerElement.append(article);
+    details.append(description, year);
+    article.append(heading, image, details);
+    containerElement.append(article);
   }
 }
+
+// Fetch public GitHub profile data
 export async function fetchGitHubData(username) {
   return fetchJSON(
     `https://api.github.com/users/${username}`

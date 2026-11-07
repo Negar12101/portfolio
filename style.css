@@ -304,3 +304,49 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
+/* Meta page summary */
+#stats .stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1.5rem;
+  margin-block: 2rem;
+}
+
+#stats .stats dt {
+  font-size: 0.85rem;
+  color: color-mix(in oklch, canvastext, canvas 30%);
+}
+
+#stats .stats dd {
+  margin: 0.4rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+/* Meta scatterplot */
+#chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+#chart .gridlines line {
+  stroke: var(--color-border);
+  stroke-opacity: 0.4;
+}
+#chart .commit-dots circle.selected {
+  fill: var(--color-accent);
+  fill-opacity: 1;
+  stroke: canvastext;
+  stroke-width: 1;
+}
+
+#language-breakdown {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1.5rem;
+}
+
+#language-breakdown dd {
+  margin: 0;
+}
