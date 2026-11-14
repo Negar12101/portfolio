@@ -1,2 +1,2 @@
 # portfolio
-My personal portfolio for Lab 1.
+My personal portfolio for Labs and Projects.
