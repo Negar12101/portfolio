@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Uneven Warming — Final Project Proposal</title>
+
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./main.js"></script>
+</head>
+
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">DSC 209R · Final Project Proposal</p>
+
+      <h1>Uneven Warming</h1>
+
+      <p class="subtitle">
+        Exploring temperature change across countries, 1961–2024
+      </p>
+
+      <p class="author">
+        Negar Ashktorab · Individual project · Instructor approved
+      </p>
+    </header>
+
+    <section aria-labelledby="overview-heading">
+      <h2 id="overview-heading">Project Overview</h2>
+
+      <p>
+        This project extends my Project 3 Temperature Change Explorer
+        into an interactive explanation of how warming differs across countries.
+      </p>
+      <p>
+        The central question is whether countries experience similar
+        temperature changes and how their long-term patterns differ.
+      </p>
+      <p>
+        I will use annual temperature anomalies relative to the
+        1951–1980 baseline, covering 1961 through 2024.
+      </p>
+      <p>
+        The analysis will distinguish sustained trends from
+        year-to-year variability.
+      </p>
+      <p>
+        Six static visualizations will examine annual patterns,
+        country comparisons, decade averages, and warming rates.
+      </p>
+      <p>
+        The final website will connect these views through country
+        selection, time filtering, and informative tooltips using D3.
+      </p>
+      <p>
+        Annotations will explain the baseline, missing values,
+        and the difference between temperature anomalies and absolute temperatures.
+      </p>
+      <p>
+        The goal is to help a general audience understand why
+        a single summary cannot describe every country's experience.
+      </p>
+    </section>
+
+    <section aria-labelledby="dataset-heading">
+      <h2 id="dataset-heading">Dataset</h2>
+
+      <dl class="dataset-details">
+        <div>
+          <dt>Source</dt>
+          <dd>IMF Climate Change Indicators Dashboard</dd>
+        </div>
+
+        <div>
+          <dt>Measure</dt>
+          <dd>
+            Annual surface temperature change relative to
+            the 1951–1980 baseline
+          </dd>
+        </div>
+
+        <div>
+          <dt>Unit</dt>
+          <dd>Degrees Celsius (°C)</dd>
+        </div>
+
+        <div>
+          <dt>Coverage</dt>
+          <dd>1961–2024</dd>
+        </div>
+
+        <div>
+          <dt>Local data file</dt>
+          <dd>
+            <a href="./data/climate_temperature.csv">
+              Download the CSV dataset
+            </a>
+          </dd>
+        </div>
+      </dl>
+
+      <p class="method-note">
+        Missing observations will be excluded from calculations rather
+        than treated as zero. Country comparisons will use explicit
+        coverage rules. Any average calculated across countries will
+        be labeled as unweighted and will not be presented as an
+        area-weighted global temperature estimate.
+      </p>
+    </section>
+
+    <section aria-labelledby="visualizations-heading">
+      <h2 id="visualizations-heading">Exploratory Visualizations</h2>
+
+      <p>
+        These six static views will guide the design of the final
+        interactive explanation.
+      </p>
+
+      <p id="loading-status" role="status">
+        Loading temperature data…
+      </p>
+
+      <div class="chart-grid">
+        <figure class="chart-card">
+          <figcaption>
+            <h3>1. Annual Temperature Change</h3>
+            <p>
+              Examine the annual pattern and its variation over time.
+            </p>
+          </figcaption>
+          <div id="chart-trend" class="chart"></div>
+        </figure>
+
+        <figure class="chart-card">
+          <figcaption>
+            <h3>2. Country Trajectories</h3>
+            <p>
+              Compare selected countries on the same temperature scale.
+            </p>
+          </figcaption>
+          <div id="chart-countries" class="chart"></div>
+        </figure>
+
+        <figure class="chart-card">
+          <figcaption>
+            <h3>3. Temperature Change by Decade</h3>
+            <p>
+              Compare period averages across selected countries.
+            </p>
+          </figcaption>
+          <div id="chart-heatmap" class="chart"></div>
+        </figure>
+
+        <figure class="chart-card">
+          <figcaption>
+            <h3>4. Earlier and Recent Periods</h3>
+            <p>
+              Compare country averages for two equal-length periods.
+            </p>
+          </figcaption>
+          <div id="chart-periods" class="chart"></div>
+        </figure>
+
+        <figure class="chart-card">
+          <figcaption>
+            <h3>5. Distribution Across Countries</h3>
+            <p>
+              Examine how the distribution of anomalies changes
+              between selected years.
+            </p>
+          </figcaption>
+          <div id="chart-distribution" class="chart"></div>
+        </figure>
+
+        <figure class="chart-card">
+          <figcaption>
+            <h3>6. Long-Term Warming Rates</h3>
+            <p>
+              Compare estimated linear trends in degrees Celsius
+              per decade.
+            </p>
+          </figcaption>
+          <div id="chart-rates" class="chart"></div>
+        </figure>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        Proposal builds on Project 3. Charts describe the available
+        observations and do not establish the causes of country differences.
+      </p>
+    </footer>
+  </main>
+</body>
+</html>
