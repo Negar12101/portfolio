@@ -2,7 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Final project proposal exploring temperature anomalies, country comparisons, and correlations from 1961 to 2024."
+  >
 
   <title>Uneven Warming — Final Project Proposal</title>
 
@@ -13,7 +22,9 @@
 <body>
   <main>
     <header>
-      <p class="eyebrow">DSC 209R · Final Project Proposal</p>
+      <p class="eyebrow">
+        DSC 209R · Final Project Proposal
+      </p>
 
       <h1>Uneven Warming</h1>
 
@@ -31,40 +42,61 @@
 
       <p>
         This project extends my Project 3 Temperature Change Explorer
-        into an interactive explanation of how warming differs across countries.
+        into an interactive explanation of temperature change across
+        eight selected countries.
       </p>
+
       <p>
-        The central question is whether countries experience similar
-        temperature changes and how their long-term patterns differ.
+        I will investigate how long-term patterns differ and whether
+        countries experience similar year-to-year changes.
       </p>
+
       <p>
-        I will use annual temperature anomalies relative to the
-        1951–1980 baseline, covering 1961 through 2024.
+        The dataset contains annual surface temperature anomalies
+        relative to the 1951–1980 baseline, covering 1961–2024.
       </p>
+
       <p>
-        The analysis will distinguish sustained trends from
-        year-to-year variability.
+        The analysis focuses on the United States, Canada, Brazil,
+        the United Kingdom, Iran, India, China, and Australia.
       </p>
+
       <p>
-        Six static visualizations will examine annual patterns,
-        country comparisons, decade averages, and warming rates.
+        Separate country panels with shared axes and trailing 10-year
+        averages will distinguish sustained patterns from annual
+        variability.
       </p>
+
       <p>
-        The final website will connect these views through country
-        selection, time filtering, and informative tooltips using D3.
+        A period heatmap and a comparison of two 20-year means will
+        show how the selected countries differ across time.
       </p>
+
       <p>
-        Annotations will explain the baseline, missing values,
-        and the difference between temperature anomalies and absolute temperatures.
+        A correlation matrix will compare annual anomaly levels with
+        year-to-year changes over a user-selected period.
       </p>
+
       <p>
-        The goal is to help a general audience understand why
-        a single summary cannot describe every country's experience.
+        A playable timeline will show annual country rankings using
+        a fixed temperature scale.
+      </p>
+
+      <p>
+        The final D3 website will develop these views into a guided
+        explanation with linked time filters, country selection,
+        and annotations for a general audience.
+      </p>
+
+      <p>
+        The goal is to explain differences between long-term change,
+        annual variability, and statistical association without
+        presenting the selected countries as a global estimate.
       </p>
     </section>
 
     <section aria-labelledby="dataset-heading">
-      <h2 id="dataset-heading">Dataset</h2>
+      <h2 id="dataset-heading">Dataset and Scope</h2>
 
       <dl class="dataset-details">
         <div>
@@ -86,101 +118,174 @@
         </div>
 
         <div>
-          <dt>Coverage</dt>
-          <dd>1961–2024</dd>
+          <dt>Time coverage</dt>
+          <dd>1961–2024 · 64 annual observations per selected country</dd>
         </div>
 
         <div>
-          <dt>Local data file</dt>
+          <dt>Source file dimensions</dt>
+          <dd>231 rows and 74 columns</dd>
+        </div>
+
+        <div>
+          <dt>Selected countries</dt>
+          <dd>
+            United States, Canada, Brazil, United Kingdom,
+            Iran, India, China, and Australia
+          </dd>
+        </div>
+
+        <div>
+          <dt>Dataset</dt>
           <dd>
             <a href="./data/climate_temperature.csv">
               Download the CSV dataset
             </a>
           </dd>
         </div>
+
+        <div>
+          <dt>Previous project</dt>
+          <dd>
+            <a href="../Project3/index.html">
+              Project 3: Temperature Change Explorer
+            </a>
+          </dd>
+        </div>
+
+        <div>
+          <dt>Project website</dt>
+          <dd>
+            <a href="https://negar12101.github.io/portfolio/FinalProject/">
+              negar12101.github.io/portfolio/FinalProject/
+            </a>
+          </dd>
+        </div>
       </dl>
 
       <p class="method-note">
-        Missing observations will be excluded from calculations rather
-        than treated as zero. Country comparisons will use explicit
-        coverage rules. Any average calculated across countries will
-        be labeled as unweighted and will not be presented as an
-        area-weighted global temperature estimate.
+        A temperature anomaly is a difference from a historical
+        baseline, not an absolute temperature. The eight countries
+        illustrate different geographic settings but are not a
+        representative sample of the world. Their unweighted mean
+        must not be interpreted as a global temperature estimate.
+      </p>
+
+      <p class="method-note">
+        Data validation requires complete annual observations for
+        the selected countries. Missing values are not replaced with
+        zero. Period comparisons use 1961–1980 and 2005–2024, with
+        20 observations in each period. Trailing 10-year averages
+        require a complete window and begin in 1970.
+      </p>
+
+      <p class="method-note">
+        Pearson correlation describes linear association, not
+        causation or equal warming rates. Correlations of annual
+        anomaly levels may reflect shared time trends. Comparing
+        year-to-year changes provides a complementary view of annual
+        variation, but does not remove every source of dependence.
+        No statistical significance claims are made.
       </p>
     </section>
 
     <section aria-labelledby="visualizations-heading">
-      <h2 id="visualizations-heading">Exploratory Visualizations</h2>
+      <h2 id="visualizations-heading">
+        Exploratory Visualizations
+      </h2>
 
       <p>
-        These six static views will guide the design of the final
-        interactive explanation.
+        Six views support the proposed explanation. The correlation
+        matrix and timeline include exploratory controls; their
+        selected states also provide static figures for this proposal.
       </p>
 
-      <p id="loading-status" role="status">
+      <p id="loading-status" role="status" aria-live="polite">
         Loading temperature data…
       </p>
+
+      <noscript>
+        <p>
+          JavaScript is required to load the dataset and draw the charts.
+        </p>
+      </noscript>
 
       <div class="chart-grid">
         <figure class="chart-card">
           <figcaption>
-            <h3>1. Annual Temperature Change</h3>
+            <h3>1. A Shared Pattern Across Selected Countries</h3>
+
             <p>
-              Examine the annual pattern and its variation over time.
+              Follow the unweighted annual mean anomaly of the same
+              eight countries from 1961 to 2024.
             </p>
           </figcaption>
+
           <div id="chart-trend" class="chart"></div>
         </figure>
 
-        <figure class="chart-card">
+        <figure class="chart-card country-comparison-card">
           <figcaption>
-            <h3>2. Country Trajectories</h3>
+            <h3>2. Eight Countries, One Shared Scale</h3>
+
             <p>
-              Compare selected countries on the same temperature scale.
+              Compare separate country panels using identical axes,
+              annual observations, and trailing 10-year averages.
             </p>
           </figcaption>
+
           <div id="chart-countries" class="chart"></div>
         </figure>
 
         <figure class="chart-card">
           <figcaption>
             <h3>3. Temperature Change by Decade</h3>
+
             <p>
-              Compare period averages across selected countries.
+              Compare period means across countries. The first and
+              last periods are partial decades.
             </p>
           </figcaption>
+
           <div id="chart-heatmap" class="chart"></div>
         </figure>
 
         <figure class="chart-card">
           <figcaption>
             <h3>4. Earlier and Recent Periods</h3>
+
             <p>
-              Compare country averages for two equal-length periods.
+              Compare each country's mean anomaly in 1961–1980
+              with its mean in 2005–2024.
             </p>
           </figcaption>
+
           <div id="chart-periods" class="chart"></div>
         </figure>
 
         <figure class="chart-card">
           <figcaption>
-            <h3>5. Distribution Across Countries</h3>
+            <h3>5. Do Countries Change Together?</h3>
+
             <p>
-              Examine how the distribution of anomalies changes
-              between selected years.
+              Compare Pearson correlations for annual anomalies
+              and year-to-year changes within a selected period.
             </p>
           </figcaption>
+
           <div id="chart-distribution" class="chart"></div>
         </figure>
 
         <figure class="chart-card">
           <figcaption>
-            <h3>6. Long-Term Warming Rates</h3>
+            <h3>6. Warming Through Time</h3>
+
             <p>
-              Compare estimated linear trends in degrees Celsius
-              per decade.
+              Explore changing annual anomalies and country rankings
+              using a playable timeline with a fixed scale.
             </p>
           </figcaption>
+
           <div id="chart-rates" class="chart"></div>
         </figure>
       </div>
@@ -188,8 +293,13 @@
 
     <footer>
       <p>
-        Proposal builds on Project 3. Charts describe the available
-        observations and do not establish the causes of country differences.
+        Negar Ashktorab · DSC 209R · Final Project Proposal
+      </p>
+
+      <p>
+        This project continues Project 3. The visualizations describe
+        observed temperature anomalies and statistical associations;
+        they do not establish the causes of country differences.
       </p>
     </footer>
   </main>
