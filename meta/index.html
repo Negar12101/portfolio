@@ -2,32 +2,123 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>Meta — Negar</title>
 
   <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./meta.css">
 
   <script type="module" src="../global.js"></script>
   <script type="module" src="./main.js"></script>
 </head>
+
 <body>
   <h1>Meta</h1>
+
   <p>
-    An analysis of the code and commit history of my portfolio website.
+    Explore the commit history of my portfolio.
+    Scroll through the story to reveal commits over time,
+    or use the timeline slider to explore a specific cutoff.
   </p>
-  <section>
-  <h2>Code Summary</h2>
-  <div id="stats"></div>
-</section>
-<section>
-  <h2>Commits by Time of Day</h2>
-  <p>
-    Each circle represents a commit. Its position shows the date
-    and time of day.
+
+  <p id="meta-status" role="status" aria-live="polite">
+    Loading code history…
   </p>
-  <div id="chart"></div>
-  <p id="selection-count">No commits selected</p>
-<dl id="language-breakdown"></dl>
-</section>
+
+  <section aria-labelledby="timeline-heading">
+    <h2 id="timeline-heading">Explore the Timeline</h2>
+
+    <div class="commit-controls">
+      <label for="commit-progress">
+        Show commits until:
+      </label>
+
+      <input
+        id="commit-progress"
+        type="range"
+        min="0"
+        max="100"
+        step="0.1"
+        value="100"
+        disabled
+      >
+
+      <time id="commit-time"></time>
+    </div>
+
+    <p class="meta-note">
+      The slider and scroll narrative control the same time cutoff.
+      Scrolling to another story step updates the cutoff automatically.
+    </p>
+  </section>
+
+  <section aria-labelledby="summary-heading">
+    <h2 id="summary-heading">Code Summary</h2>
+
+    <div id="stats"></div>
+  </section>
+
+  <section aria-labelledby="commits-heading">
+    <h2 id="commits-heading">How My Portfolio Developed</h2>
+
+    <p>
+      Each circle represents a commit associated with lines in the
+      current code snapshot. Its position shows the commit date
+      and browser-local time of day. Circle area represents the
+      number of surviving lines attributed to that commit.
+    </p>
+
+    <div id="scrolly-1">
+      <div id="scatter-story" aria-label="Commit history narrative"></div>
+
+      <div id="scatter-plot">
+        <div id="chart"></div>
+
+        <p class="meta-note">
+          Drag a rectangle across the chart to select commits.
+          Click an empty area to clear the selection.
+        </p>
+
+        <p id="selection-count" role="status" aria-live="polite">
+          No commits selected
+        </p>
+
+        <dl id="language-breakdown"></dl>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="files-heading">
+    <h2 id="files-heading">The Race for the Biggest File</h2>
+
+    <p>
+      Each dot represents one line from the current code snapshot
+      whose attributed commit falls within the selected time cutoff.
+      Files are sorted by their displayed line counts.
+      Dot colors identify the technology.
+    </p>
+
+    <p class="meta-note">
+      This view reveals surviving lines by commit date.
+      It does not reconstruct historical file versions or include
+      lines that were later deleted.
+    </p>
+
+    <div id="file-legend" aria-label="Technology color legend"></div>
+
+    <dl id="files"></dl>
+  </section>
+
+  <div
+    id="commit-tooltip"
+    class="commit-tooltip"
+    role="tooltip"
+    hidden
+  ></div>
 </body>
 </html>
